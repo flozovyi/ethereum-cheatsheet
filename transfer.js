@@ -31,6 +31,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider(testnetEndpoint));
     const transaction = new EthereumTx.Transaction(txDetails, {chain: 'ropsten', hardfork: 'petersburg'});
 
     transaction.sign(Buffer.from(process.env.ACCOUNT_PRIVATE_KEY, 'hex'));
+    transaction.v
     const serializedTransaction = transaction.serialize();
     const txId = await web3.eth.sendSignedTransaction('0x' + serializedTransaction.toString('hex'));
     console.log(txId)
