@@ -6,8 +6,8 @@ const EthereumTx = require('ethereumjs-tx');
 // const testnetEndpoint = process.env.INFURA_URI;
 const localEndpoint = `http://localhost:8545`;
 
-const account1 = '0x9317411384a505f01229859cd7e9ea76365ec7d0';
-const account2 = '0x2f0036792df25362a2de0bab82b4798657b4bc36';
+const account1 = '0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1';
+const account2 = '0xffcf8fdee72ac11b5c542428b35eef5769c409f0';
 
 // const web3 = new Web3(new Web3.providers.HttpProvider(testnetEndpoint));
 const web3 = new Web3(new Web3.providers.HttpProvider(localEndpoint));
@@ -20,29 +20,21 @@ const web3 = new Web3(new Web3.providers.HttpProvider(localEndpoint));
     console.log(`account ${account1} has ${balanceEth} Ether balance. Transaction count - ${nonce}`);
     const sendAmount = web3.utils.toWei('1', 'ether');
     const txDetails = {
-        "from": account1,
         "to": account2,
         "value": web3.utils.toHex(sendAmount),
         // "gas": 21000,
         "gasPrice": 1 * 1000000000, // converts the gwei price to wei
-        // "nonce": nonce,
+        "nonce": nonce,
         // "chainId": 3,// EIP 155 chainId - mainnet: 1, ropsten:3, rinkeby: 4
     };
     const gasEstimation = await web3.eth.estimateGas(txDetails);
-    txDetails.gas = gasEstimation;
-    console.log('gasEstimation', gasEstimation);
+    txDetails.gas=gasEstimation;
+    console.log('gasEstimation',gasEstimation)
+    // const transaction = new EthereumTx.Transaction(txDetails, {chain: 'ropsten', hardfork: 'petersburg'});
+    const transaction = new EthereumTx.Transaction(txDetails); //no extra parameter for local node
 
-
-
-    const tx = await web3.eth.sendTransaction(txDetails);
-    console.log(tx);
-
-    //
-    // const signedRawTx = await web3.eth.accounts.signTransaction({
-    //     to: account2,
-    //     value: web3.utils.toHex(sendAmount),
-    //     gas: gasEstimation
-    // }, `0x${process.env.ACCOUNT_PRIVATE_KEY}`);
-    // const txRaw = await web3.eth.sendSignedTransaction(signedRawTx.rawTransaction);
-    // console.log(txRaw)
+    transaction.sign(Buffer.from(process.env.ACCOUNT_PRIVATE_KEY, 'hex'));
+    const serializedTransaction = transaction.serialize();
+    const tx = await web3.eth.sendSignedTransaction('0x' + serializedTransaction.toString('hex'));
+    console.log(tx)
 })();

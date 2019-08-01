@@ -10,5 +10,4 @@ const web3 = new Web3(new Web3.providers.HttpProvider(testnetEndpoint));
 
 (async () => {
     const balance = await web3.eth.getBalance(account1);
-    balance
 })();

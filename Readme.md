@@ -32,6 +32,9 @@ Launch local ethereum node
 ```bash
 	
 testrpc
+testrpc --db ~/.testrpc/ --acctKeys ~/.testrpc/accounts.json -d
+
+
 
 ```
 
