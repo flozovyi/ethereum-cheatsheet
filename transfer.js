@@ -6,8 +6,8 @@ const EthereumTx = require('ethereumjs-tx');
 // const testnetEndpoint = process.env.INFURA_URI;
 const localEndpoint = `http://localhost:8545`;
 
-const account1 = '0x9317411384a505f01229859cd7e9ea76365ec7d0';
-const account2 = '0x2f0036792df25362a2de0bab82b4798657b4bc36';
+const account1 = '0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1';
+const account2 = '0x37B486ff67DF35687B200132f4BA2c9b0f2d64eF';
 
 // const web3 = new Web3(new Web3.providers.HttpProvider(testnetEndpoint));
 const web3 = new Web3(new Web3.providers.HttpProvider(localEndpoint));
@@ -37,12 +37,12 @@ const web3 = new Web3(new Web3.providers.HttpProvider(localEndpoint));
     const tx = await web3.eth.sendTransaction(txDetails);
     console.log(tx);
 
-    //
-    // const signedRawTx = await web3.eth.accounts.signTransaction({
-    //     to: account2,
-    //     value: web3.utils.toHex(sendAmount),
-    //     gas: gasEstimation
-    // }, `0x${process.env.ACCOUNT_PRIVATE_KEY}`);
-    // const txRaw = await web3.eth.sendSignedTransaction(signedRawTx.rawTransaction);
-    // console.log(txRaw)
+
+    const signedRawTx = await web3.eth.accounts.signTransaction({
+        to: account2,
+        value: web3.utils.toHex(sendAmount),
+        gas: gasEstimation
+    }, `0x${process.env.ACCOUNT_PRIVATE_KEY}`);
+    const txRaw = await web3.eth.sendSignedTransaction(signedRawTx.rawTransaction);
+    console.log(txRaw)
 })();

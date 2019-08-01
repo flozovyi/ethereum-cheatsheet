@@ -18,6 +18,7 @@ const bytecode = require('./smart-contracts/ballot/bytecode').object;
         gasLimit: web3.utils.toHex(6000000)
     };
     newContractTx.gas = await web3.eth.estimateGas(newContractTx);
+    console.log(newContractTx.gas)
     const signedNewContractTx = await web3.eth.accounts.signTransaction(newContractTx, `0x${process.env.ACCOUNT_PRIVATE_KEY}`);
     const txCreatedContract = await web3.eth.sendSignedTransaction(signedNewContractTx.rawTransaction);
     console.log(txCreatedContract);
