@@ -47,4 +47,5 @@ testrpc --db ~/.testrpc/ --acctKeys ~/.testrpc/accounts.json -d
   * https://solidity.readthedocs.io/en/v0.4.24/solidity-by-example.html#voting
   * https://solidity.readthedocs.io/en/v0.4.24/solidity-by-example.html#simple-open-auction
 * Generating bytes32 string (with MetaMask): `web3.padRight(web3.fromAscii('hello'), 34)`
+* Using Ethers.js for generating bytes32 string (https://docs.ethers.io/ethers.js/html/) `ethers.utils.formatBytes32String('Some string'),`
 

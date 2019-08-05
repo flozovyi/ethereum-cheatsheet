@@ -1,5 +1,5 @@
 require('dotenv').config();
-
+const ethers = require('ethers');
 const Web3 = require('web3');
 const localEndpoint = `http://localhost:8545`;
 
@@ -8,19 +8,33 @@ const account1 = '0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1';
 const web3 = new Web3(new Web3.providers.HttpProvider(localEndpoint));
 
 const bytecode = require('./smart-contracts/ballot/bytecode').object;
+const ABI = require('./smart-contracts/ballot/abi');
+
 
 (async () => {
-    const nonce = await web3.eth.getTransactionCount(account1);
-    let newContractTx = {
-        nonce: nonce,
-        data: '0x' + bytecode,
+    const newContract = new web3.eth.Contract(ABI, null, {
         from: account1,
-        gasLimit: web3.utils.toHex(6000000)
+    });
+    const arguments = [
+        [
+            ethers.utils.formatBytes32String('Nick'),
+            ethers.utils.formatBytes32String('Tom'),
+            ethers.utils.formatBytes32String('Bob'),
+        ]
+    ];
+    const deploymentData = {
+        data: `0x${bytecode}`,
+        arguments
     };
-    newContractTx.gas = await web3.eth.estimateGas(newContractTx);
-    console.log(newContractTx.gas)
-    const signedNewContractTx = await web3.eth.accounts.signTransaction(newContractTx, `0x${process.env.ACCOUNT_PRIVATE_KEY}`);
-    const txCreatedContract = await web3.eth.sendSignedTransaction(signedNewContractTx.rawTransaction);
-    console.log(txCreatedContract);
+    const estimatedGas = await newContract.deploy(deploymentData).estimateGas();
+    const newContractInstance = await newContract.deploy(deploymentData).send({
+        gas: estimatedGas
+    });
+
+    const contractAddress = newContractInstance._address;
+    const contractNewInstance = new web3.eth.Contract(ABI, contractAddress, {
+        from: account1,
+    });
+    const voteResult = await contractNewInstance.methods.vote(1).send()
 
 })();
